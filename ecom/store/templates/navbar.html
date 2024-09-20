@@ -16,9 +16,11 @@
                     </ul>
                 </li>
                 {%if user.is_authenticated%}
-                <li class="nav-item"><a class="nav-link" href="{% url 'login'%}">logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'logout'%}">logout</a></li>
                 {% else %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'about'%}">login</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'login'%}">login</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'register'%}">Sign up</a></li>
+
                 {% endif %}
             </ul>
             <form class="d-flex">

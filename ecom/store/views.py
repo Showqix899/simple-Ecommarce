@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import Products
 from django.contrib.auth import logout,login,authenticate
+from django.contrib import messages
+from .forms import SignUpForm
 # Create your views here.
 
 #view for home page
@@ -14,6 +16,53 @@ def home(request):
 def about(request):
 
     return render(request,'about.html',{})
-
+#user login
 def login_user(request):
-    return render(request,'login.html',{})
+    #if it is a post method
+    if request.method=="POST":
+        username=request.POST['username'] #fetching the username from the submition
+        password=request.POST['password'] #fetching the password from the submition
+
+        #checking if the is valid using authenticate method
+        user=authenticate(request,username=username,password=password)
+
+        if user is not None:
+            login(request,user) #loggin in the user
+            messages.success(request,"You are successfully logged in")
+            return redirect('home')
+        else:
+            messages.error(request,{"some thing went wrong"})
+            return redirect('login')
+
+
+    #if it's not a post method
+    else:
+        return render(request,'login.html',{})
+
+
+#user logout
+def logout_user(request):
+    logout(request) #logging out the user
+    return redirect('login')
+
+#user register
+
+def register_user(request):
+    form=SignUpForm()
+    if request.method=='POST':
+        form=SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username=form.cleaned_data['username']
+            password=form.cleaned_data['password1']
+            
+            user=authenticate(request,username=username,password=password)
+            #logging in
+            login(request,user)
+            messages.success(request,"Successfully registered")
+            return redirect('home')
+        else:
+            messages.error(request,"something went wrong")
+    else:
+        form=SignUpForm()
+    return render(request,'register.html',{'form':form})
