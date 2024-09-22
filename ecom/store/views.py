@@ -1,15 +1,25 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .models import Products
+from .models import Products,Catagory
 from django.contrib.auth import logout,login,authenticate
 from django.contrib import messages
 from .forms import SignUpForm
+from django.db.models import Q
 # Create your views here.
 
 #view for home page
 def home(request):
-    products=Products.objects.all() # fetching all the products from the database
-    return render (request,'index.html',{'products':products})
+    q=request.GET.get('q','')
+    catagories=Catagory.objects.all() # fetching all the catagory from the date base
+
+    if q:
+        products=Products.objects.filter(
+            Q(catagory__name__icontains=q)
+        )
+    else:
+        products=Products.objects.all() # fetching all the products from the database
+
+    return render (request,'index.html',{'products':products,'catagories':catagories})
 
 #about page
 
@@ -20,14 +30,14 @@ def about(request):
 def login_user(request):
     #if it is a post method
     if request.method=="POST":
-        username=request.POST['username'] #fetching the username from the submition
-        password=request.POST['password'] #fetching the password from the submition
+        username=request.POST['username'] #fetching the username from the submission
+        password=request.POST['password'] #fetching the password from the submission
 
         #checking if the is valid using authenticate method
         user=authenticate(request,username=username,password=password)
 
         if user is not None:
-            login(request,user) #loggin in the user
+            login(request,user) #login in the user
             messages.success(request,"You are successfully logged in")
             return redirect('home')
         else:
@@ -66,3 +76,14 @@ def register_user(request):
     else:
         form=SignUpForm()
     return render(request,'register.html',{'form':form})
+
+
+#getting the products
+def product(request,pk):
+    product=Products.objects.get(id=pk)
+    return render(request,'product.html',{'product':product})
+
+#getting the category
+
+
+    
