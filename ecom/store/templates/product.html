@@ -1,78 +1,107 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <style>
-    .card-container{
-        display:flex;
-        justify-content:center;
-        width: 100%;
-        height: 100vh;
-        align-items:center;
-    }
-    .card{
-        border:none;
-        box-shadow:5px 5px 10px gray;
-    }
+  .card-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    align-items: center;
+  }
+  .card {
+    border: none;
+    box-shadow: 5px 5px 10px gray;
+  }
 </style>
-    
+
 <div class="container">
-    <br>
-    
+  <br />
 
-    <div class="card-container">
-        {% if product.is_sales %}
-        <div class="card mb-3 p-5">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img src="{{product.image.url}}" class="img-fluid rounded-start" alt="product_photo">
-              </div>
-              
-                <div class="col-md-8">
-                    <div class="card-body">
-                      <h5 class="card-title">{{product.name}}</h5>
-                      <p class="card-text">{{product.description}}</p>
-                      <p class="card-text">{{product.catagory}}</p>
-                      <div class="d-flex small text-warning mb-2">
-                        <div class="bi-star-fill"></div>
-                        <p>Sale !!</p>
-                        <div class="bi-star-fill"></div>
-                    </div>         
-                      <strike>${{product.price}}</strike>
-                      &nbsp
-                      <p><strong>${{product.sales_price}}</strong></p>
-        
-                    </div>
-    
-              </div>
+  <div class="card-container">
+    {% if product.is_sales %}
+    <div class="card mb-3 p-5">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img
+            src="{{product.image.url}}"
+            class="img-fluid rounded-start"
+            alt="product_photo"
+          />
+        </div>
+
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">{{product.name}}</h5>
+            <p class="card-text">{{product.description}}</p>
+            <p class="card-text">{{product.catagory}}</p>
+            <div class="d-flex small text-warning mb-2">
+              <div class="bi-star-fill"></div>
+              <p>Sale !!</p>
+              <div class="bi-star-fill"></div>
             </div>
+            <strike>${{product.price}}</strike>
+            &nbsp
+            <p><strong>${{product.sales_price}}</strong></p>
+            <a href="{% url 'home'%}" class="btn btn-outline-primary mt-5">Home</a>
+            <button type="button" class="btn btn-outline-secondary mt-5" value="{{product.id}}" id="add-cart">add to cart</button>
+
           </div>
-        {% else %}
-    
-    
-        <div class="card mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img src="{{product.image.url}}" class="img-fluid rounded-start" alt="product_photo">
-              </div>
-              
-                <div class="col-md-8">
-                    <div class="card-body">
-                      <h5 class="card-title">{{product.name}}</h5>
-                      <p class="card-text">{{product.description}}</p>
-                      <p class="card-text">{{product.catagory}}</p>
-                    
-                      <p><strong>${{product.price}}</strong></p>
-        
-                    </div>
-    
-              </div>
-            </div>
-          </div>
-          {% endif %}
+          
+        </div>
+      </div>
     </div>
-    
+    {% else %}
 
+    <div class="card mb-3">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img
+            src="{{product.image.url}}"
+            class="img-fluid rounded-start"
+            alt="product_photo"
+          />
+        </div>
+
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">{{product.name}}</h5>
+            <p class="card-text">{{product.description}}</p>
+            <p class="card-text">{{product.catagory}}</p>
+
+            <p><strong>${{product.price}}</strong></p>
+            <a href="{% url 'home'%}" class="btn btn-outline-primary mt-5">Home</a>
+            <button type="button" class="btn btn-outline-secondary mt-5" value="{{product.id}}" id="add-cart">add to cart</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
 </div>
+
+<script>
+  $(document).on('click', '#add-cart', function(e) {
+    e.preventDefault();
+
+    // Get the product ID from the clicked button's value
+    var product_id = $(this).val();
+
+    $.ajax({
+      type: 'POST',
+      url: '{% url "cart_add" %}',
+      data: {
+        product_id: product_id,  // Use the product ID from the button's value
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        action: 'post',
+      },
+      success: function(json) {
+        console.log(json);
+      },
+    });
+  });
+</script>
+
 
 
 {% endblock %}

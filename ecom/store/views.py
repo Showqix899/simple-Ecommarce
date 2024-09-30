@@ -83,7 +83,7 @@ def product(request,pk):
     product=Products.objects.get(id=pk)
     return render(request,'product.html',{'product':product})
 
-#getting the category
+
 
 
     
