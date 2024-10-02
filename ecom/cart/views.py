@@ -8,7 +8,9 @@ from django.http import JsonResponse
 
 #for curt summary
 def curt_summary(request):
-    return render (request,'curt_summary.html',{})
+    cart=Cart(request)
+    cart_prods=cart.get_prods()
+    return render (request,'curt_summary.html',{'cart_prods':cart_prods})
 
 def cart_add(request):
     #get the cart
@@ -24,7 +26,12 @@ def cart_add(request):
         #save the session
         cart.add(product=product)
 
+        #getting the length
+        cart_quantity=cart.__len__()
+
+        return JsonResponse({'qty':cart_quantity})
+
         #return response
-        return JsonResponse({'Product name': product.id})
+        #@return JsonResponse({'Product name': product.id})
 
 

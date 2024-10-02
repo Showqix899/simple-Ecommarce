@@ -2,6 +2,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .em_cart{
+        width: 100%;
+        height: 70vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+    .em_cart h1{
+        color:gray;
+    }
+</style>
 <header class="bg-dark py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-white">
@@ -10,6 +22,81 @@
         </div>
     </div>
 </header>
-<!-- Section-->
+<div>
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 
+            {% if cart_prods %}
+            {% for cart_prod in cart_prods  %}
+            
+            {% if cart_prod.is_sales %}
+            <div class="col mb-5">
+                <div class="card h-100 p-2">
+                    <div class="badge bg-light text-black m-2 position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                    <!-- cart_prod image-->
+                    <img class="card-img-top" src="{{cart_prod.image.url}}" alt="..." />
+                    <!-- cart_prod details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- cart_prod name-->
+                            <h5 class="fw-bolder">{{cart_prod.name}}</h5>
+                            <!--sales-->
+                            <div class="d-flex justify-content-center small text-warning mb-2">
+                                <div class="bi-star-fill"></div>
+                                <p>Sale !!</p>
+                                <div class="bi-star-fill"></div>
+                            </div>
+                            <!-- cart_prod price-->
+                            <strike>${{cart_prod.price}}</strike>
+                            &nbsp
+                            ${{cart_prod.sales_price}}
+                        </div>
+                    </div>
+                    <!-- cart_prod actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    </div>
+                </div>
+            </div>
+
+            {% else %}
+            <div class="col mb-5">
+                <div class="card h-100 p-2">
+                    <!-- cart_prod image-->
+                    <img class="card-img-top" src="{{cart_prod.image.url}}" alt="..." />
+                    <!-- cart_prod details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- cart_prod name-->
+                            <h5 class="fw-bolder">{{cart_prod.name}}</h5>
+                            <!-- cart_prod price-->
+                            ${{cart_prod.price}}
+                        </div>
+                    </div>
+                    <!-- cart_prod actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                       
+                    </div>
+                </div>
+            </div>
+            
+            {% endif %}
+
+            
+            {% endfor %}
+            {% else %}
+            <div class="em_cart">
+                <h1>Your Cart Is Empyt</h1>
+            </div>
+
+            {% endif %}
+
+            
+
+        </div>
+    </div>
+      
+</div>
+<br>
+<br><br>
+<br>
 {% endblock %}
